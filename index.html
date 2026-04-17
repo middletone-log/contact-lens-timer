@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コンタクトレンズ 交換タイマー</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+
+        <!-- ヘッダー -->
+        <header class="header">
+            <div class="header-inner">
+                <h1 class="header-title">レンズ交換タイマー</h1>
+                <button class="icon-btn" id="syncBtn" title="Google Drive同期">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- メインカード -->
+        <main class="main">
+
+            <!-- レンズ情報カード -->
+            <div class="card lens-card">
+                <div class="lens-type-badge">2週間使い捨て</div>
+
+                <!-- サークルプログレスバー -->
+                <div class="progress-section">
+                    <div class="circle-wrapper">
+                        <svg class="progress-ring" viewBox="0 0 200 200">
+                            <!-- 背景トラック -->
+                            <circle
+                                class="ring-track"
+                                cx="100" cy="100" r="80"
+                                fill="none"
+                                stroke-width="12"
+                            />
+                            <!-- プログレス -->
+                            <circle
+                                class="ring-progress"
+                                id="ringProgress"
+                                cx="100" cy="100" r="80"
+                                fill="none"
+                                stroke-width="12"
+                                stroke-linecap="round"
+                                transform="rotate(-90 100 100)"
+                            />
+                        </svg>
+                        <div class="circle-content">
+                            <span class="days-number" id="daysNumber">14</span>
+                            <span class="days-label">日</span>
+                            <span class="days-sub">残り</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 日付情報 -->
+                <div class="date-info">
+                    <div class="date-item">
+                        <span class="date-label">装着開始</span>
+                        <span class="date-value" id="startDateDisplay">--/--</span>
+                    </div>
+                    <div class="date-arrow">→</div>
+                    <div class="date-item">
+                        <span class="date-label">交換予定</span>
+                        <span class="date-value exchange" id="exchangeDateDisplay">--/--</span>
+                    </div>
+                </div>
+
+                <!-- ステータスバー -->
+                <div class="status-bar" id="statusBar">
+                    <span id="statusText">新しいレンズを装着してください</span>
+                </div>
+            </div>
+
+            <!-- 操作カード -->
+            <div class="card action-card">
+                <h2 class="card-title">日数を調整</h2>
+                <div class="adjust-row">
+                    <button class="adj-btn minus" id="minusBtn">−</button>
+                    <div class="adj-display">
+                        <span id="adjDays">0</span>
+                        <span class="adj-unit">日経過</span>
+                    </div>
+                    <button class="adj-btn plus" id="plusBtn">＋</button>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-primary" id="startBtn">今日から装着開始</button>
+                    <button class="btn-secondary" id="resetBtn">リセット</button>
+                </div>
+            </div>
+
+            <!-- 通知設定カード -->
+            <div class="card notify-card">
+                <h2 class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="card-icon">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    通知設定
+                </h2>
+                <div class="notify-row">
+                    <div class="notify-label">
+                        <span>交換日の前日に通知</span>
+                        <span class="notify-sub">指定時刻にGmailで通知</span>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" id="notifyToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="notify-time-row" id="notifyTimeRow">
+                    <span class="time-label">通知時刻</span>
+                    <input type="time" id="notifyTime" class="time-input" value="04:00">
+                </div>
+                <div class="notify-row gas-row">
+                    <div class="notify-label">
+                        <span>Google Apps Script URL</span>
+                        <span class="notify-sub">GASのWebアプリURLを貼り付け</span>
+                    </div>
+                </div>
+                <input type="url" id="gasUrl" class="url-input" placeholder="https://script.google.com/macros/s/...">
+                <button class="btn-outline" id="testNotifyBtn">テスト通知を送る</button>
+            </div>
+
+            <!-- Google Drive同期カード -->
+            <div class="card sync-card">
+                <h2 class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="card-icon">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Google Drive 同期
+                </h2>
+                <p class="sync-desc">複数デバイスでデータを共有します。GASのWebアプリと連携します。</p>
+                <div class="sync-status" id="syncStatus">
+                    <span class="sync-dot disconnected"></span>
+                    <span id="syncStatusText">未接続</span>
+                </div>
+                <div class="sync-buttons">
+                    <button class="btn-outline" id="saveToCloudBtn">クラウドに保存</button>
+                    <button class="btn-outline" id="loadFromCloudBtn">クラウドから読み込み</button>
+                </div>
+                <p class="sync-note" id="lastSyncTime"></p>
+            </div>
+
+        </main>
+
+        <!-- トースト通知 -->
+        <div class="toast" id="toast"></div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
