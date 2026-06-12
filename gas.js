@@ -4,7 +4,8 @@
 // 【デプロイ手順】
 // 1. https://script.google.com で新規プロジェクト作成
 // 2. このファイルの内容を全て貼り付け
-// 3. NOTIFY_EMAIL を自分のGmailアドレスに変更
+// 3. 左の「プロジェクトの設定」→「スクリプト プロパティ」で
+//    プロパティ名 NOTIFY_EMAIL に通知先のGmailアドレスを追加
 // 4. 「デプロイ」→「新しいデプロイ」→「Webアプリ」
 //    - 実行ユーザー: 自分
 //    - アクセス権限: 全員（匿名ユーザーも含む）
@@ -13,7 +14,7 @@
 // ============================================================
 
 const FILE_NAME    = 'contact_lens_timer.json';
-const NOTIFY_EMAIL = 'REDACTED@example.com'; // ← 通知先メールアドレス
+const NOTIFY_EMAIL = PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAIL'); // ← スクリプトプロパティから取得
 
 // ------------------------------------------------------------
 // エントリーポイント（POSTリクエスト）
